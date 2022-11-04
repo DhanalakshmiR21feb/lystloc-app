@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+.Container{
+  max-width: 800px;
+  padding: 2rem;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.Body{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items:center;
+}
+
+.a{
+  text-decoration: none;
+  color:darkblue;
+  text-decoration: underline;}
