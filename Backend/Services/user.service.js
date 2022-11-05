@@ -1,11 +1,13 @@
 const { tokenService } = require("../Services/token.service");
+const { User } = require("../Models/users.model");
+const { Token } = require("../Models/token.model");
 /**
 * {
  *  "user": {
  *      "_id": "5f71b31888ba6b128ba16205",
- *      "username": "crio-user",
- *      "email": "crio-user@gmail.com",
- *      "password": "$2a$08$bzJ999eS9JLJFLj/oB4he.0UdXxcwf0WS5lbgxFKgFYtA5vV9I3vC",
+ *      "username": "user",
+ *      "email": "user@gmail.com",
+ *      "password": "abc",
  *      "createdAt": "2020-09-28T09:55:36.358Z",
  *      "updatedAt": "2020-09-28T09:55:36.358Z",
  *      "__v": 0
@@ -20,9 +22,16 @@ const { tokenService } = require("../Services/token.service");
  *
  */
  const register = (async (req, res) => {
-    const user = await userService.createUser(req.body);
-    const tokens = await tokenService.generateAuthTokens(user);
-    res.status(201).send({ user, tokens });
+    const user = await User.Create(req.body);
+    await user.save();
+   // const tokens = await tokenService.generateAuthTokens(user);
+    res.status(201).send({ user});
     return user;
   });
-  module.exports = {register}
+  const gToken=(async (req, res) => {
+    const token = await Token.generateAuthTokens();
+    await token.save();
+    res.status(201).send({ token});
+    return token;
+  });
+  module.exports = {register,gToken}

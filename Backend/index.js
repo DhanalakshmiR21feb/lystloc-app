@@ -3,7 +3,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const route = require("./routes/v1");
+var cors = require('cors');
 
+app.use(cors())
 
 const PORT = 8082;
 
@@ -23,20 +25,11 @@ app.use(express.json());
 
 app.use("/", route);
 
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+  });
 app.listen(PORT, () => {
   console.log("Server started on ", PORT);
 });
-
-
-// const http = require("http");
-
-// const server = http.createServer((req, res) => {
-//   console.log("Hello from Server");
-// res.write("<h1>Hello</h1>");
-// res.end();
-// });
-
-// server.listen(8082, () => {
-//   console.log("Listening...");
-// });

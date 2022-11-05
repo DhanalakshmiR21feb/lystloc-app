@@ -1,5 +1,16 @@
-const {register} = require("../Services/user.service");
+const {register,gToken} = require("../Services/user.service");
 
+const genToken=async(req,res)=>{
+  console.log("inside gentoken")
+  try {
+    const result=await gToken();
+  console.log(result);
+  res.json(result);
+}catch (error) {
+  res.status(409).json({
+    message: "Failed to create Token",});
+}
+}
 
 const postUser = async (req, res) => {
   try {
@@ -17,4 +28,4 @@ const postUser = async (req, res) => {
   }
 };
 
-module.exports = { postUser };
+module.exports = { postUser,genToken };

@@ -1,11 +1,51 @@
 import React from 'react';
 import { useEffect,useState } from 'react';
+import { config } from "../src/App";
+
 const Home=()=>{
     const [userName,setUserName]=useState("");
     const [submitting,setSubmitting]=useState(false);
     const [tokenInfo,setTokenInfo]=useState(null);
     const [errorMessage,setErrorMessage]=useState(null);
 
+ 
+// window.onload = function(){
+//   alert("loaded");
+// }
+window.addEventListener("load", myFunction);
+      
+    function myFunction() {
+      console.log("Inside form onload");
+      const urlToken = `${config.endpoint}/generateToken`;
+      console.log(urlToken);
+          const options1 =  {   
+              method: "GET",
+              headers: {
+            "Content-Type": "application/json",
+          },
+          mode:"no-cors",
+        };
+         fetch(urlToken, options1)
+            .then((res) => res.json())
+            .then((json) => {
+              console.log(json);
+              if (json.error) {
+                setErrorMessage(`${json.error}: ${json.info}`);
+              } else {
+                setTokenInfo(json);
+                setErrorMessage("Token created");
+              }
+              setSubmitting(false);
+            })
+            .catch((err) => {
+              setErrorMessage(" Please try again.");
+              setSubmitting(false);
+            });
+        
+      document.getElementById("message").innerHTML = "Token is generated.";
+    };
+
+  
     
   const submitForm = (e) => {
     e.preventDefault();
@@ -16,21 +56,22 @@ const Home=()=>{
       return;
     }
     setSubmitting(true);
-
-    const url = `${process.env.REACT_APP_API_BASE_URL}/createUser`;
-
-    const options =  {   
+   
+    const urlCreateUser = `${config.endpoint}/createUser`;
+console.log(urlCreateUser);
+    const options2 =  {   
         method: "POST",
         headers: {
       "Content-Type": "application/json",
     },
+    mode:"no-cors",
     body: JSON.stringify({
       name: userName,
-     
+      
     }),
   };
 
-    fetch(url, options)
+    fetch(urlCreateUser, options2)
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
@@ -39,6 +80,7 @@ const Home=()=>{
         } else {
           setTokenInfo(json);
           setErrorMessage(false);
+          document.getElementById("message").innerHTML = "User is Created.";
         }
         setSubmitting(false);
       })
@@ -56,6 +98,7 @@ const Home=()=>{
     if (e?.target?.value) {
       setUserName(e.target.value);
     }
+   
   };
 
     return (
@@ -66,14 +109,21 @@ const Home=()=>{
                     type="text"
                     onChange={handleInputChange}
                     id="userName"
+                    title='UserName'
                     required
                 />
+                 <input type="hidden"               
+                    id="tokenInfo"
+                    title='TOKEN'
+                     />
+             
                 <button id="submit-button" 
                     className='submitButton'
                     onClick={submitForm}
                     disabled={submitting}>
-                    Create Token
+                    Submit
                  </button>
+                 <p id='message'></p>
                     {errorMessage && <div className='errMessage'>{errorMessage}</div>}
                     {tokenInfo &&
                         <div><button id="clear-button" 
